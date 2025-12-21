@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategorizationRuleServiceImpl implements CategorizationRuleService {
+public class CategorizationRuleServiceImpl
+        implements CategorizationRuleService {
 
     private final CategorizationRuleRepository repository;
 
@@ -24,7 +25,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
     @Override
     public CategorizationRule getRuleById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rule not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Rule not found"));
     }
 
     @Override
