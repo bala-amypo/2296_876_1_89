@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Autowired
+
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
