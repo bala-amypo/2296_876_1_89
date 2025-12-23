@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.VendorDto;
+import com.example.demo.entity.Vendor;
 import com.example.demo.service.VendorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +18,12 @@ public class VendorController {
     }
 
     @PostMapping
-    public ResponseEntity<VendorDto> createVendor(@RequestBody VendorDto vendorDto) {
-        return ResponseEntity.ok(vendorService.createVendor(vendorDto));
+    public ResponseEntity<Vendor> createVendor(@RequestBody Vendor vendor) {
+        return ResponseEntity.ok(vendorService.createVendor(vendor));
     }
 
     @GetMapping
-    public ResponseEntity<List<VendorDto>> getAllVendors() {
+    public ResponseEntity<List<Vendor>> getAllVendors() {
         return ResponseEntity.ok(vendorService.getAllVendors());
     }
 }
