@@ -1,32 +1,28 @@
 package com.example.demo.dto;
 
-public class AuthResponse {
+import java.time.LocalDateTime;
 
-    private final String token;
-    private final Long userId;
-    private final String email;
-    private final String role;
+public class VendorDto {
 
-    public AuthResponse(String token, Long userId, String email, String role) {
-        this.token = token;
-        this.userId = userId;
-        this.email = email;
-        this.role = role;
-    }
+    private Long id;
+    private String vendorName;
+    private String contactEmail;
+    private String address;
+    private LocalDateTime createdAt;
 
-    public String getToken() {
-        return token;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getUserId() {
-        return userId;
-    }
+    public String getVendorName() { return vendorName; }
+    public void setVendorName(String vendorName) { this.vendorName = vendorName; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getContactEmail() { return contactEmail; }
+    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
-    public String getRole() {
-        return role;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
