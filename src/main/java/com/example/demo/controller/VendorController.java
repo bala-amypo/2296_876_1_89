@@ -5,7 +5,6 @@ import com.example.demo.entity.Vendor;
 import com.example.demo.service.VendorService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/vendors")
