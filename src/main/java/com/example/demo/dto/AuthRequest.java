@@ -1,32 +1,31 @@
 package com.example.demo.dto;
 
-public class AuthResponse {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-    private final String token;
-    private final Long userId;
-    private final String email;
-    private final String role;
+public class AuthRequest {
 
-    public AuthResponse(String token, Long userId, String email, String role) {
-        this.token = token;
-        this.userId = userId;
-        this.email = email;
-        this.role = role;
-    }
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
+    private String email;
 
-    public String getToken() {
-        return token;
-    }
+    @NotBlank(message = "Password is required")
+    private String password;
 
-    public Long getUserId() {
-        return userId;
-    }
-
+    // getters and setters
     public String getEmail() {
         return email;
     }
 
-    public String getRole() {
-        return role;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
