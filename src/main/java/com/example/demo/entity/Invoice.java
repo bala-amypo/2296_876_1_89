@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "invoices")
@@ -11,53 +10,27 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String invoiceNumber;
+    private String description;
 
-    @Column(nullable = false)
-    private Double amount;
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
-    @Column(nullable = false)
-    private String customerName;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    // ===== GETTERS =====
+    public String getDescription() {
+        return description;
     }
 
-    // Getters & Setters
-    public Long getId() {
-        return id;
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public String getInvoiceNumber() {
-        return invoiceNumber;
+    // ===== SETTERS =====
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = invoiceNumber;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 }

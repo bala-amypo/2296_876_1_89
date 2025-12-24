@@ -1,8 +1,8 @@
 package com.example.demo.security;
 
-import com.example.demo.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -14,22 +14,25 @@ public class JwtUtil {
     private static final String SECRET =
             "THIS_IS_A_VERY_LONG_SECRET_KEY_FOR_JWT_256_BITS";
 
-    private static final long EXPIRATION = 86400000; // 1 day
+    private static final long EXPIRATION = 86400000;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("role", user.getRole())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public String getEmailFromToken(String token) {
+        return extractUsername(token);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return getClaims(token).getExpiration().before(new Date());
     }
 
     private Claims getClaims(String token) {

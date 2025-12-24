@@ -10,48 +10,47 @@ public class CategorizationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String ruleName;
+    private String vendorKeyword;
 
-    @Column(nullable = false)
-    private String conditionField; // example: amount, vendorName
+    private String descriptionKeyword;
 
-    @Column(nullable = false)
-    private String operator; // GREATER_THAN, CONTAINS, EQUALS
+    private boolean active = true;
 
-    @Column(nullable = false)
-    private String conditionValue;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(nullable = false)
-    private String categoryName;
-
-    // Constructors
-    public CategorizationRule() {}
-
-    public CategorizationRule(String ruleName, String conditionField, String operator,
-                              String conditionValue, String categoryName) {
-        this.ruleName = ruleName;
-        this.conditionField = conditionField;
-        this.operator = operator;
-        this.conditionValue = conditionValue;
-        this.categoryName = categoryName;
+    // ===== GETTERS =====
+    public boolean isActive() {
+        return active;
     }
 
-    // Getters & Setters
-    public Long getId() { return id; }
+    public String getVendorKeyword() {
+        return vendorKeyword;
+    }
 
-    public String getRuleName() { return ruleName; }
-    public void setRuleName(String ruleName) { this.ruleName = ruleName; }
+    public String getDescriptionKeyword() {
+        return descriptionKeyword;
+    }
 
-    public String getConditionField() { return conditionField; }
-    public void setConditionField(String conditionField) { this.conditionField = conditionField; }
+    public Category getCategory() {
+        return category;
+    }
 
-    public String getOperator() { return operator; }
-    public void setOperator(String operator) { this.operator = operator; }
+    // ===== SETTERS =====
+    public void setVendorKeyword(String vendorKeyword) {
+        this.vendorKeyword = vendorKeyword;
+    }
 
-    public String getConditionValue() { return conditionValue; }
-    public void setConditionValue(String conditionValue) { this.conditionValue = conditionValue; }
+    public void setDescriptionKeyword(String descriptionKeyword) {
+        this.descriptionKeyword = descriptionKeyword;
+    }
 
-    public String getCategoryName() { return categoryName; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

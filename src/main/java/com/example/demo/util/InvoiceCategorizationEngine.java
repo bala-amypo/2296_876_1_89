@@ -16,15 +16,17 @@ public class InvoiceCategorizationEngine {
                 continue;
             }
 
-            boolean vendorMatch = rule.getVendorKeyword() == null
-                    || invoice.getVendor().getVendorName()
-                    .toLowerCase()
-                    .contains(rule.getVendorKeyword().toLowerCase());
+            boolean vendorMatch =
+                    rule.getVendorKeyword() == null ||
+                    invoice.getVendor().getVendorName()
+                            .toLowerCase()
+                            .contains(rule.getVendorKeyword().toLowerCase());
 
-            boolean descriptionMatch = rule.getDescriptionKeyword() == null
-                    || invoice.getDescription()
-                    .toLowerCase()
-                    .contains(rule.getDescriptionKeyword().toLowerCase());
+            boolean descriptionMatch =
+                    rule.getDescriptionKeyword() == null ||
+                    invoice.getDescription()
+                            .toLowerCase()
+                            .contains(rule.getDescriptionKeyword().toLowerCase());
 
             if (vendorMatch && descriptionMatch) {
                 return rule.getCategory();
