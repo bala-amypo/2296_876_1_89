@@ -1,11 +1,12 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
     name = "categories",
-    uniqueConstraints = @UniqueConstraint(columnNames = "name")
+    uniqueConstraints = @UniqueConstraint(columnNames = "category_name")
 )
 public class Category {
 
@@ -13,39 +14,25 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(name = "category_name", nullable = false, unique = true)
+    private String categoryName;
 
-    @Column
     private String description;
 
-    // Constructors
-    public Category() {
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Category(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+    // getters & setters
+    public Long getId() { return id; }
+    public String getCategoryName() { return categoryName; }
+    public String getDescription() { return description; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    // Getters & Setters
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setDescription(String description) { this.description = description; }
 }
