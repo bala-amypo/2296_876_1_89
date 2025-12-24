@@ -1,37 +1,14 @@
 package com.example.demo.util;
 
-import com.example.demo.entity.Category;
-import com.example.demo.entity.CategorizationRule;
-import com.example.demo.entity.Invoice;
+import com.example.demo.entity.*;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Locale;
 
-public final class InvoiceCategorizationEngine {
+@Component
+public class InvoiceCategorizationEngine {
 
-    private InvoiceCategorizationEngine() {
-        // Utility class – prevent instantiation
-    }
-
-    /**
-     * Applies categorization rules to an invoice
-     */
-    public static Category categorizeInvoice(
-            Invoice invoice,
-            List<CategorizationRule> rules
-    ) {
-
-        if (invoice == null || rules == null || rules.isEmpty()) {
-            return null;
-        }
-
-        String vendorName = safeLower(
-                invoice.getVendor() != null
-                        ? invoice.getVendor().getVendorName()
-                        : null
-        );
-
-        String description = safeLower(invoice.getDescription());
+    public Category categorize(Invoice invoice, List<CategorizationRule> rules) {
 
         for (CategorizationRule rule : rules) {
 
@@ -39,38 +16,21 @@ public final class InvoiceCategorizationEngine {
                 continue;
             }
 
-            boolean vendorMatch = matches(
-                    vendorName,
-                    rule.getVendorKeyword()
-            );
+            boolean vendorMatch = rule.getVendorKeyword() == null
+                    || invoice.getVendor().getVendorName()
+                    .toLowerCase()
+                    .contains(rule.getVendorKeyword().toLowerCase());
 
-            boolean descriptionMatch = matches(
-                    description,
-                    rule.getDescriptionKeyword()
-            );
+            boolean descriptionMatch = rule.getDescriptionKeyword() == null
+                    || invoice.getDescription()
+                    .toLowerCase()
+                    .contains(rule.getDescriptionKeyword().toLowerCase());
 
-            if (vendorMatch || descriptionMatch) {
+            if (vendorMatch && descriptionMatch) {
                 return rule.getCategory();
             }
         }
 
-        return null; // No rule matched
-    }
-
-    // ================= HELPER METHODS =================
-
-    private static boolean matches(String source, String keyword) {
-        if (source == null || keyword == null || keyword.isBlank()) {
-            return false;
-        }
-        return source.contains(
-                keyword.toLowerCase(Locale.ROOT)
-        );
-    }
-
-    private static String safeLower(String value) {
-        return value == null
-                ? null
-                : value.toLowerCase(Locale.ROOT);
+        return null;
     }
 }
