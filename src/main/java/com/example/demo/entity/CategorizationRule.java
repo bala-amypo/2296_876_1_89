@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categorization_rules")
@@ -10,47 +11,41 @@ public class CategorizationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String vendorKeyword;
-
-    private String descriptionKeyword;
-
-    private boolean active = true;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    @ManyToOne(optional = false)
     private Category category;
 
-    // ===== GETTERS =====
-    public boolean isActive() {
-        return active;
+    @Column(nullable = false)
+    private String keyword;
+
+    @Enumerated(EnumType.STRING)
+    private MatchType matchType;
+
+    private Integer priority;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public String getVendorKeyword() {
-        return vendorKeyword;
+    public enum MatchType {
+        EXACT,
+        CONTAINS,
+        REGEX
     }
 
-    public String getDescriptionKeyword() {
-        return descriptionKeyword;
-    }
+    // getters & setters
+    public Long getId() { return id; }
+    public Category getCategory() { return category; }
+    public String getKeyword() { return keyword; }
+    public MatchType getMatchType() { return matchType; }
+    public Integer getPriority() { return priority; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    // ===== SETTERS =====
-    public void setVendorKeyword(String vendorKeyword) {
-        this.vendorKeyword = vendorKeyword;
-    }
-
-    public void setDescriptionKeyword(String descriptionKeyword) {
-        this.descriptionKeyword = descriptionKeyword;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    public void setId(Long id) { this.id = id; }
+    public void setCategory(Category category) { this.category = category; }
+    public void setKeyword(String keyword) { this.keyword = keyword; }
+    public void setMatchType(MatchType matchType) { this.matchType = matchType; }
+    public void setPriority(Integer priority) { this.priority = priority; }
 }

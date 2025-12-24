@@ -12,7 +12,6 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    // Constructor injection
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
@@ -22,13 +21,13 @@ public class CategoryController {
         return categoryService.createCategory(category);
     }
 
-    @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable Long id) {
-        return categoryService.getCategoryById(id);
-    }
-
     @GetMapping
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
+    }
+
+    @GetMapping("/{id}")
+    public Category getCategory(@PathVariable Long id) {
+        return categoryService.getCategory(id);
     }
 }
