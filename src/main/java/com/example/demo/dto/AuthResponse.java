@@ -2,53 +2,31 @@ package com.example.demo.dto;
 
 public class AuthResponse {
 
-    private String token;        // JWT or other auth token
-    private String username;     // optional: return the username
-    private String email;        // optional: return user email
-    private Long userId;         // optional: return user ID
+    private String token;
+    private Long userId;
+    private String email;
+    private String role;
 
-    // Default constructor
-    public AuthResponse() {
-    }
-
-    // Constructor with all fields
-    public AuthResponse(String token, String username, String email, Long userId) {
+    public AuthResponse(String token, Long userId, String email, String role) {
         this.token = token;
-        this.username = username;
-        this.email = email;
         this.userId = userId;
+        this.email = email;
+        this.role = role;
     }
 
-    // Getters and Setters
     public String getToken() {
         return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
