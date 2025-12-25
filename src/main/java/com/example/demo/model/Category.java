@@ -1,38 +1,32 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(
-    name = "categories",
-    uniqueConstraints = @UniqueConstraint(columnNames = "category_name")
-)
+@Table(name = "categories", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category_name", nullable = false, unique = true)
-    private String categoryName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
-    private String description;
-
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    // Getters and setters
+    public Long getId() {
+        return id;
     }
 
-    // getters & setters
-    public Long getId() { return id; }
-    public String getCategoryName() { return categoryName; }
-    public String getDescription() { return description; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

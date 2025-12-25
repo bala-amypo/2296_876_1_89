@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.model.Category;
 import com.example.demo.model.Invoice;
-import com.example.demo.model.CategorizationRule;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.InvoiceRepository;
 import com.example.demo.service.InvoiceService;
@@ -25,14 +24,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     private InvoiceCategorizationEngine engine;
 
     @Autowired
-    private List<CategorizationRule> rules; // Or fetch from repository
+    private List<com.example.demo.model.CategorizationRule> rules; // Fetch your rules
 
     @Override
     public Invoice categorizeInvoice(Invoice invoice) {
-        // Use the engine to get category name
+        // Step 1: Determine category name
         String categoryName = engine.determineCategory(invoice, rules);
 
-        // Convert category name to Category entity
+        // Step 2: Fetch or create Category entity
         Category category = categoryRepository.findByName(categoryName)
                 .orElseGet(() -> {
                     Category newCategory = new Category();
@@ -40,9 +39,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                     return categoryRepository.save(newCategory);
                 });
 
-        // Set the Category object to invoice
+        // Step 3: Assign to invoice and save
         invoice.setCategory(category);
-
         return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public Invoice getInvoice(Long id) {
+        return invoiceRepository.findById(id).orElse(null);
     }
 }
