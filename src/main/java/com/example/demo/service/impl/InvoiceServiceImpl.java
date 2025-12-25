@@ -6,8 +6,8 @@ import com.example.demo.repository.InvoiceRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -45,13 +45,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = getInvoice(invoiceId);
         if (invoice == null) return null;
 
-        // Get all categorization rules
         List<com.example.demo.model.CategorizationRule> rules = engine.getAllRules();
-
-        // Determine category name using engine
         String categoryName = engine.determineCategory(invoice, rules);
 
-        // Convert to Category object
         Category category = categoryRepository.findByName(categoryName)
                 .orElseGet(() -> {
                     Category newCat = new Category();
@@ -60,7 +56,6 @@ public class InvoiceServiceImpl implements InvoiceService {
                 });
 
         invoice.setCategory(category);
-
         return invoiceRepository.save(invoice);
     }
 }
