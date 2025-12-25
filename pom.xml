@@ -89,6 +89,14 @@
     <scope>runtime</scope>
 </dependency>
 
+<!-- Required for platform hidden tests -->
+<dependency>
+    <groupId>org.testng</groupId>
+    <artifactId>testng</artifactId>
+    <version>7.9.0</version>
+    <scope>test</scope>
+</dependency>
+
 
     </dependencies>
 
