@@ -10,47 +10,27 @@ public class CategorizationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String keyword;        // e.g., text to match in invoice description
-    private String categoryName;   // Name of the category to assign
+    private String keyword;
 
-    // Constructors
-    public CategorizationRule() {}
+    private String categoryName;
 
-    public CategorizationRule(String keyword, String categoryName) {
-        this.keyword = keyword;
-        this.categoryName = categoryName;
-    }
+    private String matchType; // <-- MUST exist for your query
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    private Integer priority; // <-- MUST exist for your query
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getKeyword() {
-        return keyword;
-    }
+    public String getKeyword() { return keyword; }
+    public void setKeyword(String keyword) { this.keyword = keyword; }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
+    public String getCategoryName() { return categoryName; }
+    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+    public String getMatchType() { return matchType; }
+    public void setMatchType(String matchType) { this.matchType = matchType; }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    /**
-     * Checks if the rule matches the given invoice
-     */
-    public boolean matches(Invoice invoice) {
-        if (invoice.getDescription() == null) return false;
-        return invoice.getDescription().toLowerCase().contains(keyword.toLowerCase());
-    }
+    public Integer getPriority() { return priority; }
+    public void setPriority(Integer priority) { this.priority = priority; }
 }
