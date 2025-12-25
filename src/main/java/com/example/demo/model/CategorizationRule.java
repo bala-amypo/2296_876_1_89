@@ -10,34 +10,47 @@ public class CategorizationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    private String keyword;        // e.g., text to match in invoice description
+    private String categoryName;   // Name of the category to assign
 
-    @Column(nullable = false)
-    private String keyword;
-
-    @Column(nullable = false)
-    private String category;
-
+    // Constructors
     public CategorizationRule() {}
 
-    public CategorizationRule(String name, String keyword, String category) {
-        this.name = name;
+    public CategorizationRule(String keyword, String categoryName) {
         this.keyword = keyword;
-        this.category = category;
+        this.categoryName = categoryName;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getKeyword() { return keyword; }
-    public void setKeyword(String keyword) { this.keyword = keyword; }
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-    // Utility method for matching invoice
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    /**
+     * Checks if the rule matches the given invoice
+     */
     public boolean matches(Invoice invoice) {
-        return invoice.getDescription() != null && invoice.getDescription().contains(keyword);
+        if (invoice.getDescription() == null) return false;
+        return invoice.getDescription().toLowerCase().contains(keyword.toLowerCase());
     }
 }
