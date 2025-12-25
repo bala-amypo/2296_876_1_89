@@ -19,6 +19,13 @@ public class Invoice {
 
     private LocalDate invoiceDate;
 
+    // ✅ REQUIRED BY SERVICE
+    @Column(length = 500)
+    private String description;
+
+    // ✅ REQUIRED BY SERVICE
+    private String categoryName;
+
     // -----------------------
     // Vendor
     // -----------------------
@@ -27,14 +34,14 @@ public class Invoice {
     private Vendor vendor;
 
     // -----------------------
-    // Category
+    // Category (optional relation)
     // -----------------------
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     // -----------------------
-    // ✅ FIX 1: Uploaded By User
+    // Uploaded By User
     // -----------------------
     @ManyToOne
     @JoinColumn(name = "uploaded_by", nullable = false)
@@ -74,6 +81,24 @@ public class Invoice {
 
     public void setInvoiceDate(LocalDate invoiceDate) {
         this.invoiceDate = invoiceDate;
+    }
+
+    // ✅ FIXED
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    // ✅ FIXED
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public Vendor getVendor() {
