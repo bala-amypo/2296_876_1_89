@@ -1,13 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.Category;
-import com.example.demo.model.Invoice;
-import com.example.demo.model.User;
-import com.example.demo.model.Vendor;
-import com.example.demo.repository.CategoryRepository;
-import com.example.demo.repository.InvoiceRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.VendorRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +16,10 @@ public class InvoiceServiceImpl implements InvoiceService {
     private InvoiceRepository invoiceRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private VendorRepository vendorRepository;
 
     @Autowired
-    private VendorRepository vendorRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -35,26 +29,26 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-        User user = userRepository.findById(userId).orElseThrow();
-        Vendor vendor = vendorRepository.findById(vendorId).orElseThrow();
-
-        invoice.setUser(user);
-        invoice.setVendor(vendor);
-
-        // Categorize invoice
-        Category category = engine.determineCategory(invoice, categoryRepository.findAll());
-        invoice.setCategory(category);
-
-        return invoiceRepository.save(invoice);
-    }
-
-    @Override
-    public Invoice getInvoice(Long invoiceId) {
-        return invoiceRepository.findById(invoiceId).orElse(null);
+        invoice.setUser(userRepository.findById(userId).orElse(null));
+        invoice.setVendor(vendorRepository.findById(vendorId).orElse(null));
+        invoiceRepository.save(invoice);
+        return invoice;
     }
 
     @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
         return invoiceRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Invoice categorizeInvoice(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId).orElse(null);
+        if (invoice == null) return null;
+
+        List<CategorizationRule> rules = engine.getAllRules(); // make sure this returns rules, not categories
+        Category category = engine.determineCategory(invoice, rules); // returns Category
+        invoice.setCategory(category);
+        invoiceRepository.save(invoice);
+        return invoice;
     }
 }
