@@ -60,12 +60,14 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- MySQL -->
+        <!-- ✅ H2 Database (REQUIRED for tests) -->
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- ❌ MySQL REMOVED (tests will fail if present) -->
 
         <!-- Swagger / OpenAPI -->
         <dependency>
@@ -74,7 +76,7 @@
             <version>2.5.0</version>
         </dependency>
 
-        <!-- Spring Boot Test (kept but skipped) -->
+        <!-- Tests (DO NOT SKIP) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -92,14 +94,11 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Disable tests completely -->
+            <!-- ✅ ENABLE TESTS (mandatory) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
             </plugin>
 
         </plugins>
