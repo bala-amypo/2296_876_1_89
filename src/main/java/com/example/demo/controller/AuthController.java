@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -24,7 +24,8 @@ public class AuthController {
             AuthenticationManager authenticationManager,
             UserDetailsService userDetailsService,
             JwtUtil jwtUtil,
-            UserService userService) {
+            UserService userService
+    ) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
@@ -35,23 +36,26 @@ public class AuthController {
     public AuthResponse login(@RequestBody AuthRequest request) {
 
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(), request.getPassword()
-            )
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
         );
 
         UserDetails userDetails =
-                userDetailsService.loadUserByUsername(request.getEmail());
+                userDetailsService.loadUserByUsername(request.getUsername());
 
-        User user = userService.findByEmail(request.getEmail());
+        User user = userService.getAllUsers().stream()
+                .filter(u -> u.getUsername().equals(request.getUsername()))
+                .findFirst()
+                .orElseThrow();
 
-        String token = jwtUtil.generateToken(userDetails, user);
+        String token = jwtUtil.generateToken(userDetails);
 
         return new AuthResponse(
                 token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
+                user.getUsername(),
+                user.getRole().name() // ✅ ENUM → String FIX
         );
     }
 }

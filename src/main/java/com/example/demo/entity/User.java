@@ -1,22 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = @UniqueConstraint(columnNames = "email")
-)
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String fullName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -25,24 +17,9 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
 
-    private LocalDateTime createdAt;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_favorite_vendors",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "vendor_id")
-    )
-    private Set<Vendor> favoriteVendors = new HashSet<>();
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    // ===== GETTERS & SETTERS =====
+    // getters & setters
 
     public Long getId() {
         return id;
@@ -52,15 +29,7 @@ public class User {
         this.id = id;
     }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
+    public String getEmail() {   // ✅ email, NOT username
         return email;
     }
 
@@ -71,7 +40,7 @@ public class User {
     public String getPassword() {
         return password;
     }
-
+    
     public void setPassword(String password) {
         this.password = password;
     }
@@ -79,20 +48,8 @@ public class User {
     public Role getRole() {
         return role;
     }
-
+    
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Set<Vendor> getFavoriteVendors() {
-        return favoriteVendors;
-    }
-
-    public void setFavoriteVendors(Set<Vendor> favoriteVendors) {
-        this.favoriteVendors = favoriteVendors;
     }
 }
