@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,25 +15,23 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role;
+    private String role; // ROLE_USER, ROLE_ADMIN
 
-    // ===== UserDetails REQUIRED METHODS =====
-
+    // ---------- UserDetails methods ----------
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return List.of(() -> role);
     }
 
     @Override
     public String getUsername() {
-        return this.email; // email is used as username
+        return email;
     }
 
     @Override
@@ -56,8 +54,7 @@ public class User implements UserDetails {
         return true;
     }
 
-    // ===== GETTERS & SETTERS =====
-
+    // ---------- getters & setters ----------
     public Long getId() {
         return id;
     }
