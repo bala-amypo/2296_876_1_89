@@ -1,38 +1,45 @@
 package com.example.demo.util;
 
-import com.example.demo.entity.*;
-import org.springframework.stereotype.Component;
+import com.example.demo.entity.CategorizationRule;
+import com.example.demo.entity.Category;
+import com.example.demo.entity.Invoice;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
-@Component
 public class InvoiceCategorizationEngine {
 
-    public Category categorize(Invoice invoice, List<CategorizationRule> rules) {
+    public Category determineCategory(
+            Invoice invoice,
+            List<CategorizationRule> rules) {
 
-        for (CategorizationRule rule : rules) {
-
-            if (!rule.isActive()) {
-                continue;
-            }
-
-            boolean vendorMatch =
-                    rule.getVendorKeyword() == null ||
-                    invoice.getVendor().getVendorName()
-                            .toLowerCase()
-                            .contains(rule.getVendorKeyword().toLowerCase());
-
-            boolean descriptionMatch =
-                    rule.getDescriptionKeyword() == null ||
-                    invoice.getDescription()
-                            .toLowerCase()
-                            .contains(rule.getDescriptionKeyword().toLowerCase());
-
-            if (vendorMatch && descriptionMatch) {
-                return rule.getCategory();
-            }
+        if (rules == null || rules.isEmpty()) {
+            return null;
         }
 
-        return null;
+        return rules.stream()
+                .sorted((a, b) -> Integer.compare(b.getPriority(), a.getPriority()))
+                .filter(rule -> matches(rule, invoice.getDescription()))
+                .map(CategorizationRule::getCategory)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean matches(CategorizationRule rule, String description) {
+
+        if (description == null || rule.getKeyword() == null) {
+            return false;
+        }
+
+        return switch (rule.getMatchType()) {
+            case EXACT -> description.equals(rule.getKeyword());
+            case CONTAINS ->
+                    description.toLowerCase()
+                            .contains(rule.getKeyword().toLowerCase());
+            case REGEX ->
+                    Pattern.compile(rule.getKeyword())
+                            .matcher(description)
+                            .find();
+        };
     }
 }
