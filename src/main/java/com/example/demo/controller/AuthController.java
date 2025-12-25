@@ -7,6 +7,8 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,13 +18,16 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
 
     public AuthController(AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/login")
@@ -38,9 +43,13 @@ public class AuthController {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        // load UserDetails
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(user.getEmail());
 
-        // ✅ FIX: pass ALL 4 constructor args
+        // CORRECT: JwtUtil expects UserDetails
+        String token = jwtUtil.generateToken(userDetails);
+
         return new AuthResponse(
                 token,
                 user.getId(),
