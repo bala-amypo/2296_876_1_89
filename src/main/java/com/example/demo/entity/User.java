@@ -19,7 +19,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // ✅ REQUIRED: no-arg constructor
+    @Column(nullable = false)
+    private String role;   // ✅ REQUIRED
+
     public User() {
     }
 
@@ -54,5 +56,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    // ✅ REQUIRED BY SERVICES & CONTROLLERS
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
