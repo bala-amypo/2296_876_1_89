@@ -5,9 +5,11 @@ import java.util.List;
 
 public interface InvoiceService {
 
-    Invoice createInvoice(Invoice invoice);
+    Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice);
 
-    Invoice getInvoiceById(Long id);
+    Invoice categorizeInvoice(Long invoiceId);
 
-    List<Invoice> getAllInvoices();
+    List<Invoice> getInvoicesByUser(Long userId);
+
+    Invoice getInvoice(Long invoiceId);
 }
