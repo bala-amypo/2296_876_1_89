@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,30 +18,20 @@ public class Vendor {
     @Column(name = "vendor_name", nullable = false, unique = true)
     private String vendorName;
 
-    private String contactEmail;
-    private String address;
-
-    private LocalDateTime createdAt;
-
-    @ManyToMany(mappedBy = "favoriteVendors")
-    private Set<User> users = new HashSet<>();
-
-    @PrePersist
-    protected void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
+    // ❌ REMOVE users mapping completely
+    // @ManyToMany(mappedBy = "favoriteVendors")
+    // private Set<User> users = new HashSet<>();
 
     // getters & setters
-    public Long getId() { return id; }
-    public String getVendorName() { return vendorName; }
-    public String getContactEmail() { return contactEmail; }
-    public String getAddress() { return address; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public Set<User> getUsers() { return users; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setVendorName(String vendorName) { this.vendorName = vendorName; }
-    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
-    public void setAddress(String address) { this.address = address; }
-    public void setUsers(Set<User> users) { this.users = users; }
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
 }
