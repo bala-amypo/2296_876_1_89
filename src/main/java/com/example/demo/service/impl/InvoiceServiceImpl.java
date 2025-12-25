@@ -33,7 +33,6 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-        // you can link user/vendor later
         return invoiceRepository.save(invoice);
     }
 
@@ -50,12 +49,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
-        // temporary: return all
         return invoiceRepository.findAll();
     }
 
     @Override
     public Invoice getInvoice(Long invoiceId) {
-        return invoiceRepository.findById(invoiceId).orElse(null);
+        return invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Invoice;
 import com.example.demo.service.InvoiceService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,26 +17,27 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @PostMapping("/upload/{userId}/{vendorId}")
+    @PostMapping("/upload")
     public Invoice uploadInvoice(
-            @PathVariable Long userId,
-            @PathVariable Long vendorId,
-            @RequestBody Invoice invoice) {
+            @RequestParam Long userId,
+            @RequestParam Long vendorId,
+            @RequestBody Invoice invoice
+    ) {
         return invoiceService.uploadInvoice(userId, vendorId, invoice);
     }
 
-    @PostMapping("/categorize/{invoiceId}")
-    public Invoice categorizeInvoice(@PathVariable Long invoiceId) {
-        return invoiceService.categorizeInvoice(invoiceId);
+    @PostMapping("/{id}/categorize")
+    public Invoice categorize(@PathVariable Long id) {
+        return invoiceService.categorizeInvoice(id);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Invoice> getInvoicesByUser(@PathVariable Long userId) {
+    public List<Invoice> getByUser(@PathVariable Long userId) {
         return invoiceService.getInvoicesByUser(userId);
     }
 
-    @GetMapping("/{invoiceId}")
-    public Invoice getInvoice(@PathVariable Long invoiceId) {
-        return invoiceService.getInvoice(invoiceId);
+    @GetMapping("/{id}")
+    public Invoice getInvoice(@PathVariable Long id) {
+        return invoiceService.getInvoice(id);
     }
 }
