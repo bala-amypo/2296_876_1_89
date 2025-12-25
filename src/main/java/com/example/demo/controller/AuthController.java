@@ -37,16 +37,16 @@ public class AuthController {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getEmail(),      // ✅ FIX
                         request.getPassword()
                 )
         );
 
         UserDetails userDetails =
-                userDetailsService.loadUserByUsername(request.getUsername());
+                userDetailsService.loadUserByUsername(request.getEmail());
 
         User user = userService.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals(request.getUsername()))
+                .filter(u -> u.getEmail().equals(request.getEmail())) // ✅ FIX
                 .findFirst()
                 .orElseThrow();
 
@@ -54,8 +54,8 @@ public class AuthController {
 
         return new AuthResponse(
                 token,
-                user.getUsername(),
-                user.getRole().name() // ✅ ENUM → String FIX
+                user.getEmail(),              // ✅ FIX
+                user.getRole().name()
         );
     }
 }
