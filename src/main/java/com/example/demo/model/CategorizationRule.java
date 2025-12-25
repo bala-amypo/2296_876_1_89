@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categorization_rules")
@@ -11,41 +10,34 @@ public class CategorizationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    private Category category;
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
     private String keyword;
 
-    @Enumerated(EnumType.STRING)
-    private MatchType matchType;
+    @Column(nullable = false)
+    private String category;
 
-    private Integer priority;
+    public CategorizationRule() {}
 
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    public CategorizationRule(String name, String keyword, String category) {
+        this.name = name;
+        this.keyword = keyword;
+        this.category = category;
     }
 
-    public enum MatchType {
-        EXACT,
-        CONTAINS,
-        REGEX
-    }
-
-    // getters & setters
     public Long getId() { return id; }
-    public Category getCategory() { return category; }
-    public String getKeyword() { return keyword; }
-    public MatchType getMatchType() { return matchType; }
-    public Integer getPriority() { return priority; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-
     public void setId(Long id) { this.id = id; }
-    public void setCategory(Category category) { this.category = category; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getKeyword() { return keyword; }
     public void setKeyword(String keyword) { this.keyword = keyword; }
-    public void setMatchType(MatchType matchType) { this.matchType = matchType; }
-    public void setPriority(Integer priority) { this.priority = priority; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    // Utility method for matching invoice
+    public boolean matches(Invoice invoice) {
+        return invoice.getDescription() != null && invoice.getDescription().contains(keyword);
+    }
 }
