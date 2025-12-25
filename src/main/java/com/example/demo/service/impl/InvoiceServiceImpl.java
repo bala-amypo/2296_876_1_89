@@ -32,20 +32,30 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public Invoice createInvoice(Invoice invoice) {
-        // Auto category logic
-        String categoryName = categorizationEngine.categorize(invoice.getDescription());
-        invoice.setCategoryName(categoryName);
+    public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
+        // you can link user/vendor later
         return invoiceRepository.save(invoice);
     }
 
     @Override
-    public List<Invoice> getAllInvoices() {
+    public Invoice categorizeInvoice(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+
+        String category = categorizationEngine.categorize(invoice.getDescription());
+        invoice.setCategoryName(category);
+
+        return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public List<Invoice> getInvoicesByUser(Long userId) {
+        // temporary: return all
         return invoiceRepository.findAll();
     }
 
     @Override
-    public Invoice getInvoiceById(Long id) {
-        return invoiceRepository.findById(id).orElse(null);
+    public Invoice getInvoice(Long invoiceId) {
+        return invoiceRepository.findById(invoiceId).orElse(null);
     }
 }
