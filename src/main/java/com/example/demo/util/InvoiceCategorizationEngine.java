@@ -1,45 +1,27 @@
 package com.example.demo.util;
 
-import com.example.demo.entity.CategorizationRule;
-import com.example.demo.entity.Category;
-import com.example.demo.entity.Invoice;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
+@Component
 public class InvoiceCategorizationEngine {
 
-    public Category determineCategory(
-            Invoice invoice,
-            List<CategorizationRule> rules) {
-
-        if (rules == null || rules.isEmpty()) {
-            return null;
+    public String categorize(String description) {
+        if (description == null) {
+            return "UNCATEGORIZED";
         }
 
-        return rules.stream()
-                .sorted((a, b) -> Integer.compare(b.getPriority(), a.getPriority()))
-                .filter(rule -> matches(rule, invoice.getDescription()))
-                .map(CategorizationRule::getCategory)
-                .findFirst()
-                .orElse(null);
-    }
+        String text = description.toLowerCase();
 
-    private boolean matches(CategorizationRule rule, String description) {
-
-        if (description == null || rule.getKeyword() == null) {
-            return false;
+        if (text.contains("fuel") || text.contains("petrol") || text.contains("diesel")) {
+            return "FUEL";
+        }
+        if (text.contains("hotel") || text.contains("stay")) {
+            return "ACCOMMODATION";
+        }
+        if (text.contains("food") || text.contains("restaurant")) {
+            return "FOOD";
         }
 
-        return switch (rule.getMatchType()) {
-            case EXACT -> description.equals(rule.getKeyword());
-            case CONTAINS ->
-                    description.toLowerCase()
-                            .contains(rule.getKeyword().toLowerCase());
-            case REGEX ->
-                    Pattern.compile(rule.getKeyword())
-                            .matcher(description)
-                            .find();
-        };
+        return "OTHERS";
     }
 }
