@@ -3,14 +3,11 @@ package com.example.demo.service.impl;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
-import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class InvoiceServiceImpl implements InvoiceService {
+public class InvoiceServiceImpl {
 
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
@@ -23,8 +20,8 @@ public class InvoiceServiceImpl implements InvoiceService {
             UserRepository userRepository,
             VendorRepository vendorRepository,
             CategorizationRuleRepository ruleRepository,
-            InvoiceCategorizationEngine engine) {
-
+            InvoiceCategorizationEngine engine
+    ) {
         this.invoiceRepository = invoiceRepository;
         this.userRepository = userRepository;
         this.vendorRepository = vendorRepository;
@@ -32,9 +29,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         this.engine = engine;
     }
 
-    @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -48,37 +43,27 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.save(invoice);
     }
 
-    @Override
-    public Invoice getInvoice(Long invoiceId) {
-        return invoiceRepository.findById(invoiceId)
+    public Invoice getInvoice(Long id) {
+        return invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
     }
 
-    @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return invoiceRepository.findByUploadedBy(user);
     }
 
-    @Override
     public Invoice categorizeInvoice(Long invoiceId) {
-
         Invoice invoice = getInvoice(invoiceId);
 
         List<CategorizationRule> rules =
                 ruleRepository.findMatchingRulesByDescription(invoice.getDescription());
 
-        // ✅ FIX HERE
         Category category = engine.determineCategory(invoice, rules);
+        invoice.setCategory(category);
 
-        if (category != null) {
-            invoice.setCategory(category);
-            invoiceRepository.save(invoice);
-        }
-
-        return invoice;
+        return invoiceRepository.save(invoice);
     }
 }
