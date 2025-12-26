@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categorization_rules")
@@ -13,7 +14,11 @@ public class CategorizationRule {
     private String keyword;
 
     // IMPORTANT: name expected by services
+    @Column(nullable = false)
     private String categoryName;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     public CategorizationRule() {
     }
@@ -23,6 +28,13 @@ public class CategorizationRule {
         this.categoryName = categoryName;
     }
 
+    /* ---------- Lifecycle ---------- */
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    /* ---------- Getters & Setters ---------- */
     public Long getId() {
         return id;
     }
@@ -43,7 +55,11 @@ public class CategorizationRule {
         this.categoryName = categoryName;
     }
 
-    // Used by InvoiceCategorizationEngine
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    /* ---------- Used by InvoiceCategorizationEngine ---------- */
     public boolean matches(Invoice invoice) {
         if (invoice == null || invoice.getDescription() == null || keyword == null) {
             return false;
