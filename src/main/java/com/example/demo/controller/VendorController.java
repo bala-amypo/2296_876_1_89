@@ -21,13 +21,24 @@ public class VendorController {
         return vendorService.createVendor(vendor);
     }
 
+    @GetMapping("/{id}")
+    public Vendor getVendorById(@PathVariable Long id) {
+        return vendorService.getVendorById(id); // ✅ FIXED
+    }
+
     @GetMapping
     public List<Vendor> getAllVendors() {
         return vendorService.getAllVendors();
     }
 
-    @GetMapping("/{vendorId}")
-    public Vendor getVendor(@PathVariable Long vendorId) {
-        return vendorService.getVendor(vendorId);
+    @PutMapping("/{id}")
+    public Vendor updateVendor(@PathVariable Long id,
+                               @RequestBody Vendor vendor) {
+        return vendorService.updateVendor(id, vendor);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteVendor(@PathVariable Long id) {
+        vendorService.deleteVendor(id);
     }
 }
