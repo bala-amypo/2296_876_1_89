@@ -6,23 +6,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = @UniqueConstraint(columnNames = "email")
+)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String fullName;
 
-    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
 
-    private String role;
+    private String role = "USER";
 
-    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToMany
@@ -33,87 +34,28 @@ public class User {
     )
     private Set<Vendor> favoriteVendors = new HashSet<>();
 
-    public User() {}
-
-    /* ---------- Lifecycle ---------- */
     @PrePersist
     public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
+        this.createdAt = LocalDateTime.now();
     }
 
-    /* ---------- Getters & Setters ---------- */
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    // 🔴 REQUIRED BY TESTS
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getName() {
-        return name;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getEmail() {
-        return email;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Set<Vendor> getFavoriteVendors() {
-        return favoriteVendors;
-    }
-
-    public void setFavoriteVendors(Set<Vendor> favoriteVendors) {
-        this.favoriteVendors = favoriteVendors;
-    }
-
-    /* ---------- Helper methods (TESTS REQUIRE THESE) ---------- */
-
-    public void addFavoriteVendor(Vendor vendor) {
-        if (vendor != null) {
-            this.favoriteVendors.add(vendor);
-        }
-    }
-
-    public void removeFavoriteVendor(Vendor vendor) {
-        if (vendor != null) {
-            this.favoriteVendors.remove(vendor);
-        }
-    }
+    public Set<Vendor> getFavoriteVendors() { return favoriteVendors; }
 }

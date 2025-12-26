@@ -1,46 +1,35 @@
 package com.example.demo.util;
 
-import com.example.demo.model.CategorizationRule;
-import com.example.demo.model.Invoice;
-import com.example.demo.repository.CategorizationRuleRepository;
-import org.springframework.stereotype.Component;
-
-import java.util.Collections;
+import com.example.demo.model.*;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
-@Component
 public class InvoiceCategorizationEngine {
 
-    private CategorizationRuleRepository ruleRepository;
+    public Category determineCategory(Invoice invoice, List<CategorizationRule> rules) {
+        if (rules == null || rules.isEmpty()) return null;
 
-    // ✅ REQUIRED for hidden tests (no-args constructor)
-    public InvoiceCategorizationEngine() {
+        return rules.stream()
+                .sorted(Comparator.comparingInt(CategorizationRule::getPriority).reversed())
+                .filter(rule -> matches(invoice.getDescription(), rule))
+                .map(CategorizationRule::getCategory)
+                .findFirst()
+                .orElse(null);
     }
 
-    // ✅ Used by Spring
-    public InvoiceCategorizationEngine(CategorizationRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
-    }
+    private boolean matches(String desc, CategorizationRule rule) {
+        if (desc == null) return false;
 
-    // REQUIRED by InvoiceServiceImpl & tests
-    public List<CategorizationRule> getAllRules() {
-        if (ruleRepository == null) {
-            return Collections.emptyList(); // prevent NPE in tests
+        switch (rule.getMatchType()) {
+            case "EXACT":
+                return desc.equals(rule.getKeyword());
+            case "CONTAINS":
+                return desc.toLowerCase().contains(rule.getKeyword().toLowerCase());
+            case "REGEX":
+                return Pattern.compile(rule.getKeyword()).matcher(desc).find();
+            default:
+                return false;
         }
-        return ruleRepository.findAll();
-    }
-
-    // REQUIRED by InvoiceServiceImpl & tests
-    public String determineCategory(Invoice invoice, List<CategorizationRule> rules) {
-        if (rules == null || invoice == null) {
-            return "Uncategorized";
-        }
-
-        for (CategorizationRule rule : rules) {
-            if (rule.matches(invoice)) {
-                return rule.getCategoryName();
-            }
-        }
-        return "Uncategorized";
     }
 }
