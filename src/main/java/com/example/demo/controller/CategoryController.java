@@ -17,17 +17,17 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
+    public Category create(@RequestBody Category category) {
         return categoryService.createCategory(category);
     }
 
-    @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    @GetMapping("/{id}")
+    public Category get(@PathVariable Long id) {
+        return categoryService.getCategory(id);
     }
 
-    @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id) {
-        return categoryService.getCategory(id);
+    @GetMapping
+    public List<Category> getAll() {
+        return categoryService.getAllCategories();
     }
 }
