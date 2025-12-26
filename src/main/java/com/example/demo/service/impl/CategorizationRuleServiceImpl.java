@@ -25,12 +25,23 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
     @Override
     public CategorizationRule createRule(Long categoryId, CategorizationRule rule) {
-
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         rule.setCategory(category);
         return ruleRepository.save(rule);
+    }
+
+    @Override
+    public CategorizationRule updateRule(Long ruleId, CategorizationRule rule) {
+        CategorizationRule existing = ruleRepository.findById(ruleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
+
+        existing.setKeyword(rule.getKeyword());
+        existing.setMatchType(rule.getMatchType());
+        existing.setPriority(rule.getPriority());
+
+        return ruleRepository.save(existing);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.CategorizationRule;
 import com.example.demo.service.CategorizationRuleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,12 +10,24 @@ import java.util.List;
 @RequestMapping("/api/rules")
 public class CategorizationRuleController {
 
-    @Autowired
-    private CategorizationRuleService ruleService;
+    private final CategorizationRuleService ruleService;
 
-    @PostMapping
-    public CategorizationRule createRule(@RequestBody CategorizationRule rule) {
-        return ruleService.createRule(rule);
+    public CategorizationRuleController(CategorizationRuleService ruleService) {
+        this.ruleService = ruleService;
+    }
+
+    @PostMapping("/category/{categoryId}")
+    public CategorizationRule createRule(
+            @PathVariable Long categoryId,
+            @RequestBody CategorizationRule rule) {
+        return ruleService.createRule(categoryId, rule);
+    }
+
+    @PutMapping("/{ruleId}")
+    public CategorizationRule updateRule(
+            @PathVariable Long ruleId,
+            @RequestBody CategorizationRule rule) {
+        return ruleService.updateRule(ruleId, rule);
     }
 
     @GetMapping
@@ -24,18 +35,8 @@ public class CategorizationRuleController {
         return ruleService.getAllRules();
     }
 
-    @GetMapping("/{id}")
-    public CategorizationRule getRuleById(@PathVariable Long id) {
-        return ruleService.getRuleById(id);
-    }
-
-    @PutMapping("/{id}")
-    public CategorizationRule updateRule(@PathVariable Long id, @RequestBody CategorizationRule rule) {
-        return ruleService.updateRule(id, rule);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteRule(@PathVariable Long id) {
-        ruleService.deleteRule(id);
+    @DeleteMapping("/{ruleId}")
+    public void deleteRule(@PathVariable Long ruleId) {
+        ruleService.deleteRule(ruleId);
     }
 }
