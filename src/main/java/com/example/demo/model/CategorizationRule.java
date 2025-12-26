@@ -16,6 +16,7 @@ public class CategorizationRule {
     private String keyword;
     private String matchType;
     private int priority;
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -23,11 +24,7 @@ public class CategorizationRule {
         createdAt = LocalDateTime.now();
     }
 
-    // REQUIRED BY SERVICES + TESTS
-    public String getCategoryName() {
-        return category != null ? category.getCategoryName() : null;
-    }
-
+    // getters
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 

@@ -6,10 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(
-    name = "vendors",
-    uniqueConstraints = @UniqueConstraint(columnNames = "vendorName")
-)
+@Table(name = "vendors")
 public class Vendor {
 
     @Id
@@ -17,8 +14,7 @@ public class Vendor {
     private Long id;
 
     private String vendorName;
-    private String contactEmail;
-    private String address;
+
     private LocalDateTime createdAt;
 
     @ManyToMany(mappedBy = "favoriteVendors")

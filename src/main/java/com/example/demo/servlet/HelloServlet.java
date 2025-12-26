@@ -8,8 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
 
-    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        // no state
+        // empty by design
     }
 }
