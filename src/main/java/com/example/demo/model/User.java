@@ -38,35 +38,82 @@ public class User {
     /* ---------- Lifecycle ---------- */
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
 
     /* ---------- Getters & Setters ---------- */
-    public Long getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
+    // 🔴 REQUIRED BY TESTS
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEmail() { return email; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setEmail(String email) { this.email = email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getPassword() { return password; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public void setPassword(String password) { this.password = password; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getRole() { return role; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public void setRole(String role) { this.role = role; }
+    public String getRole() {
+        return role;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-    public Set<Vendor> getFavoriteVendors() { return favoriteVendors; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    // 🔴 REQUIRED BY TESTS
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<Vendor> getFavoriteVendors() {
+        return favoriteVendors;
+    }
 
     public void setFavoriteVendors(Set<Vendor> favoriteVendors) {
         this.favoriteVendors = favoriteVendors;
+    }
+
+    /* ---------- Helper methods (TESTS REQUIRE THESE) ---------- */
+
+    public void addFavoriteVendor(Vendor vendor) {
+        if (vendor != null) {
+            this.favoriteVendors.add(vendor);
+        }
+    }
+
+    public void removeFavoriteVendor(Vendor vendor) {
+        if (vendor != null) {
+            this.favoriteVendors.remove(vendor);
+        }
     }
 }
