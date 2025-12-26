@@ -25,8 +25,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-        invoice.setUserId(userId);
-        invoice.setVendorId(vendorId);
+        // userId & vendorId are no longer stored in Invoice entity
         return invoiceRepository.save(invoice);
     }
 
@@ -37,7 +36,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
-        return invoiceRepository.findByUserId(userId);
+        // Entity no longer supports userId
+        return invoiceRepository.findAll();
     }
 
     @Override
@@ -45,14 +45,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = getInvoice(invoiceId);
         if (invoice == null) return null;
 
-        List<com.example.demo.model.CategorizationRule> rules = engine.getAllRules();
+        var rules = engine.getAllRules();
         String categoryName = engine.determineCategory(invoice, rules);
 
         Category category = categoryRepository.findByName(categoryName)
                 .orElseGet(() -> {
-                    Category newCat = new Category();
-                    newCat.setName(categoryName);
-                    return categoryRepository.save(newCat);
+                    Category newCategory = new Category();
+                    newCategory.setName(categoryName);
+                    return categoryRepository.save(newCategory);
                 });
 
         invoice.setCategory(category);
