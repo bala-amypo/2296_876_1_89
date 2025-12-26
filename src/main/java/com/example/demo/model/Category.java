@@ -23,8 +23,13 @@ public class Category {
         createdAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    // REQUIRED BY SERVICES
+    public void setName(String name) {
+        this.categoryName = name;
+    }
+
     public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
 }

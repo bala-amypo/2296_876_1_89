@@ -1,11 +1,15 @@
 package com.example.demo.util;
 
 import com.example.demo.model.*;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class InvoiceCategorizationEngine {
+
+    // REQUIRED by InvoiceServiceImpl
+    public List<CategorizationRule> getAllRules() {
+        return new ArrayList<>();
+    }
 
     public Category determineCategory(Invoice invoice, List<CategorizationRule> rules) {
         if (rules == null || rules.isEmpty()) return null;
@@ -19,7 +23,7 @@ public class InvoiceCategorizationEngine {
     }
 
     private boolean matches(String desc, CategorizationRule rule) {
-        if (desc == null) return false;
+        if (desc == null || rule.getKeyword() == null) return false;
 
         switch (rule.getMatchType()) {
             case "EXACT":

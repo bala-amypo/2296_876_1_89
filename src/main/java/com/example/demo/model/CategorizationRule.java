@@ -23,6 +23,11 @@ public class CategorizationRule {
         createdAt = LocalDateTime.now();
     }
 
+    // REQUIRED BY SERVICES + TESTS
+    public String getCategoryName() {
+        return category != null ? category.getCategoryName() : null;
+    }
+
     public Category getCategory() { return category; }
     public void setCategory(Category category) { this.category = category; }
 
