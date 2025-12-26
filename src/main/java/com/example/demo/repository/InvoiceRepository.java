@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Invoice;
+import com.example.demo.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,10 +10,14 @@ import java.util.List;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
-    // Method used by tests (derived query)
+    // Used in services
+    List<Invoice> findByUploadedBy(User user);
+
+    // Used by tests (derived query)
     List<Invoice> findByAmountGreaterThan(double amount);
 
-    // Method explicitly required by test cases
+    // Used by tests (HQL query)
     @Query("SELECT i FROM Invoice i WHERE i.amount > :amount")
     List<Invoice> findByAmountGreaterThanHql(@Param("amount") double amount);
 }
+
