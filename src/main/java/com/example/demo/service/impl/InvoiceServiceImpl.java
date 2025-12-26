@@ -1,100 +1,84 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.Invoice;
-import com.example.demo.model.Category;
-import com.example.demo.model.User;
-import com.example.demo.repository.InvoiceRepository;
-import com.example.demo.repository.CategoryRepository;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
-    private InvoiceRepository invoiceRepository;
-    private CategoryRepository categoryRepository;
-    private InvoiceCategorizationEngine engine;
+    private final InvoiceRepository invoiceRepository;
+    private final UserRepository userRepository;
+    private final VendorRepository vendorRepository;
+    private final CategorizationRuleRepository ruleRepository;
+    private final InvoiceCategorizationEngine engine;
 
-    // ✅ REQUIRED for hidden tests
-    public InvoiceServiceImpl() {
-    }
-
-    // ✅ Used by Spring
     public InvoiceServiceImpl(
             InvoiceRepository invoiceRepository,
-            CategoryRepository categoryRepository,
-            InvoiceCategorizationEngine engine
-    ) {
+            UserRepository userRepository,
+            VendorRepository vendorRepository,
+            CategorizationRuleRepository ruleRepository,
+            InvoiceCategorizationEngine engine) {
+
         this.invoiceRepository = invoiceRepository;
-        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+        this.vendorRepository = vendorRepository;
+        this.ruleRepository = ruleRepository;
         this.engine = engine;
     }
 
     @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
-        if (invoiceRepository == null) {
-            return invoice;
-        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Vendor vendor = vendorRepository.findById(vendorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+
+        invoice.setUploadedBy(user);
+        invoice.setVendor(vendor);
+        invoice.setCategory(null);
+
         return invoiceRepository.save(invoice);
     }
 
     @Override
     public Invoice getInvoice(Long invoiceId) {
-        if (invoiceRepository == null) {
-            return null;
-        }
-        return invoiceRepository.findById(invoiceId).orElse(null);
+        return invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
     }
 
     @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
-        if (invoiceRepository == null) {
-            return Collections.emptyList();
-        }
 
-        // Hidden tests expect uploadedBy-based lookup
-        User user = new User();
-        user.setId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (invoiceRepository instanceof com.example.demo.repository.InvoiceRepository) {
-            try {
-                return invoiceRepository.findByUploadedBy(user);
-            } catch (Exception e) {
-                return invoiceRepository.findAll();
-            }
-        }
-
-        return invoiceRepository.findAll();
+        return invoiceRepository.findByUploadedBy(user);
     }
 
     @Override
     public Invoice categorizeInvoice(Long invoiceId) {
-        if (invoiceRepository == null || categoryRepository == null || engine == null) {
-            return null;
-        }
 
         Invoice invoice = getInvoice(invoiceId);
-        if (invoice == null) {
-            return null;
+
+        List<CategorizationRule> rules =
+                ruleRepository.findMatchingRulesByDescription(invoice.getDescription());
+
+        // ✅ FIX HERE
+        Category category = engine.determineCategory(invoice, rules);
+
+        if (category != null) {
+            invoice.setCategory(category);
+            invoiceRepository.save(invoice);
         }
 
-        String categoryName = engine.determineCategory(
-                invoice,
-                engine.getAllRules()
-        );
-
-        Category category = categoryRepository.findByName(categoryName)
-                .orElseGet(() -> {
-                    Category c = new Category();
-                    c.setName(categoryName);
-                    return categoryRepository.save(c);
-                });
-
-        invoice.setCategory(category);
-        return invoiceRepository.save(invoice);
+        return invoice;
     }
 }
