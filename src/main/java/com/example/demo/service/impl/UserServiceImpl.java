@@ -33,7 +33,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
@@ -41,10 +42,9 @@ public class UserServiceImpl implements UserService {
         User existingUser = getUserById(id);
 
         existingUser.setEmail(user.getEmail());
-
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+        existingUser.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
 
         return userRepository.save(existingUser);
     }
@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with email: " + email));
     }
 }
