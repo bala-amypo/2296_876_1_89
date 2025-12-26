@@ -13,25 +13,15 @@ public class CategorizationRule {
 
     private String keyword;
 
-    // Used by services & tests
+    // IMPORTANT: name expected by services
     @Column(nullable = false)
     private String categoryName;
-
-    // 🔴 REQUIRED BY TESTS
-    private String matchType;
-
-    // 🔴 REQUIRED BY TESTS
-    private int priority;
-
-    // 🔴 REQUIRED BY TESTS
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public CategorizationRule() {}
+    public CategorizationRule() {
+    }
 
     public CategorizationRule(String keyword, String categoryName) {
         this.keyword = keyword;
@@ -41,20 +31,12 @@ public class CategorizationRule {
     /* ---------- Lifecycle ---------- */
     @PrePersist
     public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
+        this.createdAt = LocalDateTime.now();
     }
 
     /* ---------- Getters & Setters ---------- */
-
     public Long getId() {
         return id;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getKeyword() {
@@ -73,43 +55,8 @@ public class CategorizationRule {
         this.categoryName = categoryName;
     }
 
-    // 🔴 REQUIRED BY TESTS
-    public String getMatchType() {
-        return matchType;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setMatchType(String matchType) {
-        this.matchType = matchType;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public int getPriority() {
-        return priority;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public Category getCategory() {
-        return category;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    // 🔴 REQUIRED BY TESTS
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     /* ---------- Used by InvoiceCategorizationEngine ---------- */
