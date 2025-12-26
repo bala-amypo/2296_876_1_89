@@ -37,51 +37,82 @@ public class Invoice {
 
     @PrePersist
     public void prePersist() {
-        this.uploadedAt = LocalDateTime.now();
+        if (this.uploadedAt == null) {
+            this.uploadedAt = LocalDateTime.now();
+        }
     }
 
     /* ---------- Getters & Setters ---------- */
-    public Long getId() { return id; }
 
-    public String getInvoiceNumber() { return invoiceNumber; }
+    public Long getId() {
+        return id;
+    }
+
+    // 🔴 REQUIRED BY TESTS
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
 
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Double getAmount() { return amount; }
+    public Double getAmount() {
+        return amount;
+    }
 
     public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public LocalDate getInvoiceDate() { return invoiceDate; }
+    public LocalDate getInvoiceDate() {
+        return invoiceDate;
+    }
 
     public void setInvoiceDate(LocalDate invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
 
-    public LocalDateTime getUploadedAt() { return uploadedAt; }
+    public LocalDateTime getUploadedAt() {
+        return uploadedAt;
+    }
 
-    public User getUploadedBy() { return uploadedBy; }
+    // 🔴 REQUIRED BY TESTS
+    public void setUploadedAt(LocalDateTime uploadedAt) {
+        this.uploadedAt = uploadedAt;
+    }
+
+    public User getUploadedBy() {
+        return uploadedBy;
+    }
 
     public void setUploadedBy(User uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 
-    public Vendor getVendor() { return vendor; }
+    public Vendor getVendor() {
+        return vendor;
+    }
 
     public void setVendor(Vendor vendor) {
         this.vendor = vendor;
     }
 
-    public Category getCategory() { return category; }
+    public Category getCategory() {
+        return category;
+    }
 
     public void setCategory(Category category) {
         this.category = category;
