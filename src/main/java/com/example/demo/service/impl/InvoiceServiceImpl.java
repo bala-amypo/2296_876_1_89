@@ -3,11 +3,14 @@ package com.example.demo.service.impl;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.InvoiceService;
 import com.example.demo.util.InvoiceCategorizationEngine;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class InvoiceServiceImpl {
+@Service   // ⭐ THIS WAS MISSING OR WRONG
+public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
@@ -29,12 +32,17 @@ public class InvoiceServiceImpl {
         this.engine = engine;
     }
 
+    @Override
     public Invoice uploadInvoice(Long userId, Long vendorId, Invoice invoice) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Vendor vendor = vendorRepository.findById(vendorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+
+        if (invoice.getAmount() == null || invoice.getAmount() <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero");
+        }
 
         invoice.setUploadedBy(user);
         invoice.setVendor(vendor);
@@ -43,11 +51,13 @@ public class InvoiceServiceImpl {
         return invoiceRepository.save(invoice);
     }
 
-    public Invoice getInvoice(Long id) {
-        return invoiceRepository.findById(id)
+    @Override
+    public Invoice getInvoice(Long invoiceId) {
+        return invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
     }
 
+    @Override
     public List<Invoice> getInvoicesByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -55,6 +65,7 @@ public class InvoiceServiceImpl {
         return invoiceRepository.findByUploadedBy(user);
     }
 
+    @Override
     public Invoice categorizeInvoice(Long invoiceId) {
         Invoice invoice = getInvoice(invoiceId);
 
@@ -62,8 +73,8 @@ public class InvoiceServiceImpl {
                 ruleRepository.findMatchingRulesByDescription(invoice.getDescription());
 
         Category category = engine.determineCategory(invoice, rules);
-        invoice.setCategory(category);
 
+        invoice.setCategory(category);
         return invoiceRepository.save(invoice);
     }
 }
