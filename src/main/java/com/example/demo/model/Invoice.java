@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "invoices")
@@ -10,62 +12,78 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String invoiceNumber;
+
     private String description;
+
     private Double amount;
+
+    private LocalDate invoiceDate;
+
+    @Column(updatable = false)
+    private LocalDateTime uploadedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "uploaded_by")
+    private User uploadedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private Long userId;
-    private Long vendorId;
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
+    @PrePersist
+    public void prePersist() {
+        this.uploadedAt = LocalDateTime.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    /* ---------- Getters & Setters ---------- */
+    public Long getId() { return id; }
+
+    public String getInvoiceNumber() { return invoiceNumber; }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Category getCategory() {
-        return category;
+    public LocalDate getInvoiceDate() { return invoiceDate; }
+
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
+
+    public LocalDateTime getUploadedAt() { return uploadedAt; }
+
+    public User getUploadedBy() { return uploadedBy; }
+
+    public void setUploadedBy(User uploadedBy) {
+        this.uploadedBy = uploadedBy;
+    }
+
+    public Vendor getVendor() { return vendor; }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public Category getCategory() { return category; }
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(Long vendorId) {
-        this.vendorId = vendorId;
     }
 }

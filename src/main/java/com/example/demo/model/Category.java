@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "categories", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
@@ -10,23 +11,26 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    // Getters and setters
-    public Long getId() {
-        return id;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    public Category() {}
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     public void setName(String name) {
         this.name = name;
     }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
