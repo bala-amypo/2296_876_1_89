@@ -11,7 +11,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    // Internal storage
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(updatable = false)
@@ -21,16 +22,47 @@ public class Category {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
 
-    public Long getId() { return id; }
+    /* ---------- Getters & Setters ---------- */
 
-    public String getName() { return name; }
+    public Long getId() {
+        return id;
+    }
+
+    // 🔴 REQUIRED BY TESTS
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    // Primary accessor
+    public String getName() {
+        return name;
+    }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    // 🔴 ALIAS REQUIRED BY TESTS
+    public String getCategoryName() {
+        return name;
+    }
+
+    // 🔴 ALIAS REQUIRED BY TESTS
+    public void setCategoryName(String categoryName) {
+        this.name = categoryName;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    // 🔴 REQUIRED BY TESTS
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
