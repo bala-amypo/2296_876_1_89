@@ -10,12 +10,9 @@ public interface CategorizationRuleRepository
         extends JpaRepository<CategorizationRule, Long> {
 
     @Query("""
-           SELECT r
-           FROM CategorizationRule r
-           WHERE LOWER(:description) LIKE LOWER(CONCAT('%', r.keyword, '%'))
-              OR r.matchType = 'EXACT'
-              OR r.matchType = 'REGEX'
-           ORDER BY r.priority DESC
-           """)
+        SELECT r FROM CategorizationRule r
+        WHERE LOWER(:description) LIKE LOWER(CONCAT('%', r.keyword, '%'))
+        ORDER BY r.priority DESC
+    """)
     List<CategorizationRule> findMatchingRulesByDescription(String description);
 }

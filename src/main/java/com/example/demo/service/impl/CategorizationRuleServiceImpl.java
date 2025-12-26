@@ -1,8 +1,8 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Category;
 import com.example.demo.model.CategorizationRule;
+import com.example.demo.model.Category;
 import com.example.demo.repository.CategorizationRuleRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.service.CategorizationRuleService;
@@ -25,6 +25,7 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
 
     @Override
     public CategorizationRule createRule(Long categoryId, CategorizationRule rule) {
+
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
@@ -33,23 +34,14 @@ public class CategorizationRuleServiceImpl implements CategorizationRuleService 
     }
 
     @Override
-    public CategorizationRule updateRule(Long ruleId, CategorizationRule updatedRule) {
-        CategorizationRule existingRule = ruleRepository.findById(ruleId)
+    public CategorizationRule getRuleById(Long ruleId) {
+        return ruleRepository.findById(ruleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
-
-        existingRule.setKeyword(updatedRule.getKeyword());
-        existingRule.setMatchType(updatedRule.getMatchType());
-        existingRule.setPriority(updatedRule.getPriority());
-
-        // ✅ FIX HERE
-        existingRule.setCategory(updatedRule.getCategory());
-
-        return ruleRepository.save(existingRule);
     }
 
     @Override
-    public List<CategorizationRule> getRulesByCategory(Long categoryId) {
-        return ruleRepository.findByCategoryId(categoryId);
+    public List<CategorizationRule> getAllRules() {
+        return ruleRepository.findAll();
     }
 
     @Override
