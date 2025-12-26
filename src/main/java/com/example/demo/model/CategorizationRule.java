@@ -1,10 +1,6 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "categorization_rules")
@@ -16,14 +12,15 @@ public class CategorizationRule {
 
     private String keyword;
 
-    private String category;
+    // IMPORTANT: name expected by services
+    private String categoryName;
 
     public CategorizationRule() {
     }
 
-    public CategorizationRule(String keyword, String category) {
+    public CategorizationRule(String keyword, String categoryName) {
         this.keyword = keyword;
-        this.category = category;
+        this.categoryName = categoryName;
     }
 
     public Long getId() {
@@ -38,15 +35,15 @@ public class CategorizationRule {
         this.keyword = keyword;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    // REQUIRED by InvoiceCategorizationEngine
+    // Used by InvoiceCategorizationEngine
     public boolean matches(Invoice invoice) {
         if (invoice == null || invoice.getDescription() == null || keyword == null) {
             return false;
