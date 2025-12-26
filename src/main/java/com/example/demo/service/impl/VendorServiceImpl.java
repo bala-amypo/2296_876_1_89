@@ -3,10 +3,13 @@ package com.example.demo.service.impl;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Vendor;
 import com.example.demo.repository.VendorRepository;
+import com.example.demo.service.VendorService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class VendorServiceImpl {
+@Service
+public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository vendorRepository;
 
@@ -14,16 +17,32 @@ public class VendorServiceImpl {
         this.vendorRepository = vendorRepository;
     }
 
+    @Override
     public Vendor createVendor(Vendor vendor) {
         return vendorRepository.save(vendor);
     }
 
-    public Vendor getVendor(Long id) {
+    @Override
+    public Vendor getVendorById(Long id) {
         return vendorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendor not found with id " + id));
     }
 
+    @Override
     public List<Vendor> getAllVendors() {
         return vendorRepository.findAll();
+    }
+
+    @Override
+    public Vendor updateVendor(Long id, Vendor vendor) {
+        Vendor existing = getVendorById(id);
+        existing.setVendorName(vendor.getVendorName());
+        return vendorRepository.save(existing);
+    }
+
+    @Override
+    public void deleteVendor(Long id) {
+        Vendor existing = getVendorById(id);
+        vendorRepository.delete(existing);
     }
 }
