@@ -1,75 +1,41 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-import org.springframework.stereotype.Service;
-
-import java.util.Collections;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
-    private UserRepository userRepository;
+    private final UserRepository repo;
+    private final PasswordEncoder encoder;
 
-    // ✅ REQUIRED for hidden tests
-    public UserServiceImpl() {
+    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
+        this.repo = repo;
+        this.encoder = encoder;
     }
 
-    // ✅ Used by Spring
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Override
     public User registerUser(User user) {
-        if (userRepository == null) {
-            return user;
+        if (repo.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
         }
-        return userRepository.save(user);
+        user.setPassword(encoder.encode(user.getPassword()));
+        return repo.save(user);
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        if (userRepository == null) {
-            return Collections.emptyList();
-        }
-        return userRepository.findAll();
+    public User findByEmail(String email) {
+        User u = repo.findByEmail(email);
+        if (u == null) throw new ResourceNotFoundException("User not found");
+        return u;
     }
 
-    @Override
     public User getUserById(Long id) {
-        if (userRepository == null) {
-            return null;
-        }
-        Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.orElse(null);
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    @Override
-    public User updateUser(Long id, User user) {
-        if (userRepository == null) {
-            return user;
-        }
-
-        User existingUser = getUserById(id);
-        if (existingUser == null) {
-            return null;
-        }
-
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setRole(user.getRole());
-
-        return userRepository.save(existingUser);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        if (userRepository != null) {
-            userRepository.deleteById(id);
-        }
+    public List<User> getAllUsers() {
+        return repo.findAll();
     }
 }
